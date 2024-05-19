@@ -48,17 +48,19 @@ void ft_solove_life_game(vector<vector<int>> *grid , int n , int x)
     int step;
 
     dead_line = 0;
-    step = 0;
+  
     while(x > 0)
     {
+        vector<vector<int>> new_grid = *grid;
         for(int i = 0; i < n; i++)
         {
             for(int j = 0; j < n; j++)
             {
                 int dead_line = ft_count_dedline(i , j , n, grid);
-                ft_case_deal(i , j , grid , dead_line);
+                ft_case_deal(i , j , &new_grid , dead_line);
             }
         }
+        *grid = new_grid;
         x--;;  
     }
 }
