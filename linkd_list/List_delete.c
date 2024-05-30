@@ -1,3 +1,4 @@
+#include <stddef.h>
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -6,17 +7,65 @@ struct ListNode {
     struct ListNode *next;
 };
 
-void deleteHead(struct ListNode **head)
+
+struct ListNode *create(int data)
+{
+    struct ListNode *newnode = (struct ListNode *)malloc(sizeof(struct ListNode));
+    newnode -> data = data;
+    newnode -> next = NULL;
+    return (newnode);
+}
+
+void insertHead(struct ListNode **head , int data)
+{
+    struct ListNode *newnode = create(data);
+    newnode -> next = *head;
+    *head = newnode;
+}
+
+void insertTail(struct ListNode **head , int data)
+{
+    struct ListNode *newnode = create(data);
+    if(*head == NULL)
+    {
+        *head = newnode;
+        return;
+    }
+    struct ListNode *temp = *head;
+    while(temp -> next != NULL)
+        temp = temp -> next;
+    temp -> next = newnode;
+}
+
+void insertPosition(struct ListNode **head , int data , int position)
+{
+    if(position == 1)
+    {
+        insertHead(head, data);
+        return;
+    }
+    struct ListNode *newnode = create(data);
+    struct ListNode *temp = *head;
+    for(int i = 1; temp != NULL && i < position - 1; i++)
+    {
+        temp = temp -> next;
+    }
+    if(temp == NULL || temp -> next == NULL)
+        return;
+    newnode -> next = temp -> next;
+    temp -> next = newnode;
+}
+
+void deleteAtHead(struct ListNode **head)
 {
     if(*head == NULL)
-        return ;
+        return;
     struct ListNode *temp = *head;
     *head = (*head) -> next;
     free(temp);
-
 }
 
-void deleteTail(struct ListNode **head)
+void deleteAtTail(struct ListNode **head)
 {
     if(*head == NULL)
         return;
@@ -24,15 +73,48 @@ void deleteTail(struct ListNode **head)
     {
         free(*head);
         *head = NULL;
-        return ;
+        return;
     }
     struct ListNode *temp = *head;
     while(temp -> next -> next != NULL)
+    {
         temp = temp -> next;
+    }
     free(temp -> next);
     temp -> next = NULL;
-
 }
+
+void deleteAtPosition(struct ListNode **head , int position)
+{
+    if(*head == NULL)
+        return;
+    if(position == 1)
+    {
+        deleteAtHead(head);
+        return;
+    }
+    struct ListNode *temp = *head;
+    for(int i = 1; temp != NULL && i < position - 1; i++)
+        temp = temp -> next;
+    if(temp == NULL || temp -> next == NULL)
+        return;
+    struct ListNode *deleteNode = temp -> next;
+    temp -> next = deleteNode -> next;
+    free(deleteNode);
+}
+
+void printList(struct ListNode *head)
+{
+    struct ListNode *temp = head;
+    while(temp != NULL)
+    {
+        printf("%d -> ", temp -> data);
+        temp = temp -> next;
+    }
+    printf("NULL\n");
+}
+
+
 
 int main()
 {
@@ -63,5 +145,12 @@ int main()
     printList(head);
     return (0);
 
-
+    struct ListNode *temp;
+    while(head != NULL)
+    {
+        temp = head;
+        head = head -> next;
+        free(temp);
+    }
+    return (0);
 }
